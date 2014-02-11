@@ -37,6 +37,7 @@ end
   type fortigate_log_parser
   remove_prefix raw
   country_map_file /etc/td-agent/country.map
+  fortios_version 5
 </match>
 
 <match fortigate>
