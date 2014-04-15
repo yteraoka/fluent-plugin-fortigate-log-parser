@@ -2,6 +2,8 @@ module Fluent
   class FortigateSyslogParseOutput < Output
     Fluent::Plugin.register_output('fortigate_log_parser', self)
 
+    require 'uri'
+
     config_param :remove_prefix,    :string, :default => nil
     config_param :add_prefix,       :string, :default => nil
     config_param :message_key,      :string, :default => 'message'
@@ -109,6 +111,14 @@ module Fluent
            @country_map.has_key?(record[@dstcountry_key])
           record[@dstcountry_key + "_code"] = @country_map[ record[@dstcountry_key] ]
         end
+      end
+
+      if record.has_key?("file")
+        record["file"] = URI.escape(record["file"])
+      end
+
+      if record.has_key?("filename")
+        record["filename"] = URI.escape(record["filename"])
       end
 
       record.delete("date")
