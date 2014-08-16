@@ -31,14 +31,11 @@ end
 
 ```:td-agent.conf
 <source>
-  type tail_ex
+  type tail
   format none
   path /var/log/local6/%Y%m%d/fortigate
   tag raw.fortigate
   pos_file /var/log/td-agent/fortidate.pos
-  refresh_interval 600
-  read_all true
-  expand_date true
 </source>
 
 <match raw.fortigate>
@@ -82,6 +79,9 @@ end
   flush_interval 10s
 </match>
 ```
+
+Fluentd merged fluent-plugin-tail-ex features in v0.10.45.
+And td-agent 1.1.19 include fluentd v0.10.45.
 
 ## Generate country.map file
 
