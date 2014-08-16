@@ -29,17 +29,18 @@ module Fluent
 
       if @keys
         if @remove_keys
-          raise ConfigError, "fortigate_log_parser: 'keys' and 'remove_keys' parameters are exclusive"
+          fail ConfigError, "fortigate_log_parser: 'keys' and 'remove_keys'" \
+                             ' parameters are exclusive'
         end
-        @keys = Hash[@keys.split(',').map {|x| [x, 1] }]
+        @keys = Hash[@keys.split(',').map { |x| [x, 1] }]
       end
       if @remove_keys
-        @remove_keys = Hash[@remove_keys.split(',').map {|x| [x, 1] }]
+        @remove_keys = Hash[@remove_keys.split(',').map { |x| [x, 1] }]
       end
 
       if @country_map_file
         @country_map = {}
-        File.open(@country_map_file, "r") do |f|
+        File.open(@country_map_file, 'r') do |f|
           f.each_line do |line|
             (country_name, country_code) = line.chomp.split(/\t/, 2)
             @country_map[country_name] = country_code
@@ -48,19 +49,20 @@ module Fluent
       end
 
       if @fortios_version >= 5
-        @srccountry_key = "srccountry"
-        @dstcountry_key = "dstcountry"
+        @srccountry_key = 'srccountry'
+        @dstcountry_key = 'dstcountry'
       else
-        @srccountry_key = "src_country"
-        @dstcountry_key = "dst_country"
+        @srccountry_key = 'src_country'
+        @dstcountry_key = 'dst_country'
       end
     end
 
     def emit(tag, es, chain)
       _tag = tag.clone
 
-      if @remove_prefix and
-        ((tag.start_with?(@removed_prefix_string) && tag.length > @removed_length) || tag == @remove_prefix)
+      if @remove_prefix &&
+        ((tag.start_with?(@removed_prefix_string) &&
+          tag.length > @removed_length) || tag == @remove_prefix)
         tag = tag[@removed_length..-1] || ''
       end
 
@@ -80,20 +82,20 @@ module Fluent
       message = record[@message_key]
       record.delete(@message_key)
       data = message.split(/\s+/, 5).pop
-      data.gsub(/\G[^,=]+=(:?"[^"]*"|[^,]+)(:?,|$)/) { |kv|
+      data.gsub(/\G[^,=]+=(:?"[^"]*"|[^,]+)(:?,|$)/) do |kv|
         (k, v) = kv.strip.split(/=/, 2)
-        if (k == 'date' or k == 'time' or
-           (@keys and @keys.has_key?(k)) or
-           (@remove_keys and not @remove_keys.has_key?(k)) or
-           (!@keys and !@remove_keys))
+        if k == 'date' || k == 'time' ||
+           (@keys && @keys.key?(k)) ||
+           (@remove_keys && !@remove_keys.key?(k)) ||
+           (!@keys && !@remove_keys)
           record[k] = v.gsub(/,$/, '').gsub(/^"(.*)"$/, '\1')
         end
-      }
+      end
 
-      time_str = record["date"] + " " + record["time"]
+      time_str = record['date'] + ' ' + record['time']
       time = nil
 
-      if (@prev_time and time_str == @prev_time_str)
+      if @prev_time && time_str == @prev_time_str
         time = @prev_time
       else
         # XXX FortiGate BUG (time format)
@@ -103,28 +105,30 @@ module Fluent
       end
 
       if @country_map
-        if record.has_key?(@srccountry_key) and
-           @country_map.has_key?(record[@srccountry_key])
-          record[@srccountry_key + "_code"] = @country_map[ record[@srccountry_key] ]
+        if record.key?(@srccountry_key) &&
+           @country_map.key?(record[@srccountry_key])
+          record[@srccountry_key + '_code'] =
+              @country_map[record[@srccountry_key]]
         end
-        if record.has_key?(@dstcountry_key) and
-           @country_map.has_key?(record[@dstcountry_key])
-          record[@dstcountry_key + "_code"] = @country_map[ record[@dstcountry_key] ]
+        if record.key?(@dstcountry_key) &&
+           @country_map.key?(record[@dstcountry_key])
+          record[@dstcountry_key + '_code'] =
+              @country_map[record[@dstcountry_key]]
         end
       end
 
-      if record.has_key?("file")
-        record["file"] = URI.escape(record["file"])
+      if record.key?('file')
+        record['file'] = URI.escape(record['file'])
       end
 
-      if record.has_key?("filename")
-        record["filename"] = URI.escape(record["filename"])
+      if record.key?('filename')
+        record['filename'] = URI.escape(record['filename'])
       end
 
-      record.delete("date")
-      record.delete("time")
+      record.delete('date')
+      record.delete('time')
 
-      [ time, record ]
+      [time, record]
     end
   end
 end
