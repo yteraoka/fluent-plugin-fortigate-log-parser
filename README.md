@@ -7,6 +7,12 @@ This fluentd plugin parse CSV format FortiGate log
 
 You can use GeoLite Country file for World Map in Kibana.
 
+## Plugin setup
+
+With td-agent:
+
+Put `out_fortigate_syslog_parser.rb` into /etc/td-agent/plugin directory.
+
 ## FortiGate config
 
 ```
