@@ -19,6 +19,10 @@ module Fluent
       @prev_time = nil
       @country_map = nil
 
+      if @message_key == ''
+        fail ConfigError, 'message_key required a value'
+      end
+
       if @remove_prefix
         @removed_prefix_string = @remove_prefix + '.'
         @removed_length = @removed_prefix_string.length
@@ -39,6 +43,9 @@ module Fluent
       end
 
       if @country_map_file
+        unless File.exist?(@country_map_file)
+          fail ConfigError, "#{@country_map_file} does not exist"
+        end
         @country_map = {}
         File.open(@country_map_file, 'r') do |f|
           f.each_line do |line|

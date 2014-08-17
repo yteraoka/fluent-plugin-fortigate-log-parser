@@ -88,5 +88,5 @@ And td-agent 1.1.19 include fluentd v0.10.45.
 ```
 curl -O http://geolite.maxmind.com/download/geoip/database/GeoIPCountryCSV.zip
 unzip GeoIPCountryCSV.zip
-ruby mkCountryMap.rb GeoIPCountryWhois.csv > country.map
+ruby bin/gen_fg_country_map GeoIPCountryWhois.csv | sort -u > country.map
 ```
