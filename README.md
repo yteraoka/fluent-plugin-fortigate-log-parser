@@ -11,9 +11,9 @@ You can build poor man's FortiAnalyzer.
 
 ## Plugin setup
 
-With td-agent:
-
-Put `out_fortigate_syslog_parser.rb` into /etc/td-agent/plugin directory.
+```
+gem install fluent-plugin-fortigate-log-parser
+```
 
 ## FortiGate config
 

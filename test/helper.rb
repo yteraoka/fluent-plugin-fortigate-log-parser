@@ -20,6 +20,6 @@ end
 }
 $log = nulllogger
 end
-require 'fluent/plugin/out_fortigate_syslog_parser'
+require 'fluent/plugin/out_fortigate_log_parser'
 class Test::Unit::TestCase
 end
