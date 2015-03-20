@@ -64,7 +64,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
     assert_equal '0000000001', emits[0][2]['logid']
   end
 
-  def test_emit_rewrite_tag
+  def test_emit_uri_escape
     d1 = create_driver(CONFIG)
     d1.run do
       d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,file=あああ,filename=いいい'})
