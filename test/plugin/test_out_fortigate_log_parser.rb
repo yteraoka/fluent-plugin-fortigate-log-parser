@@ -57,7 +57,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit
     d1 = create_driver(CONFIG)
     d1.run do
-      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,devname=TEST_NAME,devid=TEST_ID,logid=0000000001'})
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59,devname=TEST_NAME,devid=TEST_ID,logid=0000000001'})
     end
     emits = d1.emits
     assert_equal 1, emits.length
@@ -67,7 +67,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit_uri_escape
     d1 = create_driver(CONFIG)
     d1.run do
-      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,file=あああ,filename=いいい'})
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59,file=あああ,filename=いいい'})
     end
     emits = d1.emits
     assert_equal 1, emits.length
@@ -78,7 +78,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit_rewrite_tag
     d1 = create_driver(CONFIG_REWRITE_TAG, 'before.test')
     d1.run do
-      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59'})
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59'})
     end
     emits = d1.emits
     assert_equal 1, emits.length
@@ -88,7 +88,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit_message_key
     d1 = create_driver(CONFIG_MESSAGE_KEY)
     d1.run do
-      d1.emit({'mykey' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,key1=value1,key2=value2'})
+      d1.emit({'mykey' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59,key1=value1,key2=value2'})
     end
     emits = d1.emits
     assert_equal 1, emits.length
@@ -97,6 +97,16 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   end
 
   def test_emit_date_parse
+    d1 = create_driver()
+    d1.run do
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59'})
+    end
+    emits = d1.emits
+    assert_equal 1, emits.length
+    assert_equal 1408201199, emits[0][1]
+  end
+
+  def test_rsync_workaround
     d1 = create_driver()
     d1.run do
       d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59'})
@@ -109,7 +119,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit_country_map
     d1 = create_driver(CONFIG_COUNTRY_MAP)
     d1.run do
-      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,srccountry=Japan,dstcountry=United States'})
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59,srccountry=Japan,dstcountry=United States'})
     end
     emits = d1.emits
     assert_equal 1, emits.length
@@ -122,7 +132,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit_os_version4
     d1 = create_driver(CONFIG_OS_VERSION4)
     d1.run do
-      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,src_country=Japan,dst_country=United States'})
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59,src_country=Japan,dst_country=United States'})
     end
     emits = d1.emits
     assert_equal 1, emits.length
@@ -135,7 +145,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit_keys
     d1 = create_driver(CONFIG_KEYS)
     d1.run do
-      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,a=A,b=B,c=C,x=X,y=Y,z=Z'})
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59,a=A,b=B,c=C,x=X,y=Y,z=Z'})
     end
     expected = {'a' => 'A', 'b' => 'B', 'c' => 'C'}
     emits = d1.emits
@@ -146,7 +156,7 @@ class FortigateSyslogParserOutputTest < Test::Unit::TestCase
   def test_emit_remove_keys
     d1 = create_driver(CONFIG_REMOVE_KEYS)
     d1.run do
-      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23: 59:59,a=A,b=B,c=C,x=X,y=Y,z=Z'})
+      d1.emit({'message' => 'Aug 17 00:00:00 fortigate date=2014-08-16,time=23:59:59,a=A,b=B,c=C,x=X,y=Y,z=Z'})
     end
     expected = {'x' => 'X', 'y' => 'Y', 'z' => 'Z'}
     emits = d1.emits

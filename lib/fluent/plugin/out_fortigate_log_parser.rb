@@ -99,14 +99,18 @@ module Fluent
         end
       end
 
+      # rsyslog workaround (remove the unnecessary white space)
+      # rsyslog insert a space (0x20) after first semi-colon
+      # (eg. time=12:34:56 -> time=12: 34:56)
+      record['time'].gsub!(' ', '')
+
       time_str = record['date'] + ' ' + record['time']
       time = nil
 
       if @prev_time && time_str == @prev_time_str
         time = @prev_time
       else
-        # XXX FortiGate BUG (time format)
-        time = Time.strptime(time_str, '%Y-%m-%d %H: %M:%S').to_i
+        time = Time.strptime(time_str, '%Y-%m-%d %H:%M:%S').to_i
         @prev_time = time
         @prev_time_str = time_str
       end
