@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "fluent-plugin-fortigate-log-parser"
-  spec.version       = "0.2.0"
+  spec.version       = "0.2.1"
   spec.authors       = ["Yoshinori TERAOKA"]
   spec.email         = ["jyobijyoba@gmail.com"]
   spec.summary       = %q{fluentd plugin for parse FortiGate log}

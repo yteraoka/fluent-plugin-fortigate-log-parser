@@ -100,7 +100,7 @@ module Fluent
       end
 
       # rsyslog workaround (remove the unnecessary white space)
-      # rsyslog insert a space (0x20) after first semi-colon
+      # rsyslog insert a space (0x20) after first colon (:)
       # (eg. time=12:34:56 -> time=12: 34:56)
       record['time'].gsub!(' ', '')
 
