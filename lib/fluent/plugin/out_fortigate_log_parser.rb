@@ -79,7 +79,7 @@ module Fluent
 
       es.each do |time, record|
         time, record = parse(record)
-        Engine.emit(tag, time, record)
+        router.emit(tag, time, record)
       end
 
       chain.next
